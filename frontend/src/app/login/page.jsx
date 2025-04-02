@@ -54,8 +54,8 @@ export default function LoginPage() {
         <Image src="/logo.svg" alt="Logo" width={100} height={100} className="w-[30rem] h-[15rem]"/>
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6 text-sm">
             <p>
-              <strong>Note:</strong> This is just a demo prototype of the <strong>Employee Management System</strong> created for <strong>Chief Education Office Kashmir</strong> for their employee management. 
-              This is just the early frontend prototype; the full backend and other features are not shown due to privacy reasons.
+              <strong>Note:</strong> This is just the early frontend prototype of the <strong>Employee Management System</strong> created for <strong>Chief Education Office Kashmir</strong> for their employee management. 
+              the full backend and other features are not shown due to privacy reasons.
             </p>
             <p className="mt-2">
               Below are the login credentials to test this prototype:
