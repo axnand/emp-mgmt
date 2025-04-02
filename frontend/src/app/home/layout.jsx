@@ -11,6 +11,9 @@ import {
   LogOut,
   ChevronRight,
   File,
+  Menu,
+  Upload,
+  Download, // added Menu for sidebar toggle
 } from "lucide-react";
 import Link from "next/link";
 import { TopBar } from "@/components/TopBar";
@@ -21,6 +24,8 @@ export default function DashboardLayout({ children }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  // New state for collapsible sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   // State for toggling the Transfers subnav
   const [transfersOpen, setTransfersOpen] = useState(false);
 
@@ -63,7 +68,6 @@ export default function DashboardLayout({ children }) {
         href: "/home/logs",
         icon: <Clipboard className="mr-2 h-5 w-5" />,
       },
-      
     ],
     schoolAdmin: [
       {
@@ -88,10 +92,12 @@ export default function DashboardLayout({ children }) {
           {
             title: "Outgoing Transfers",
             href: "/home/transfers/outgoing",
+            icon: <Upload className=" h-5 w-5" />,
           },
           {
             title: "Incoming Transfers",
             href: "/home/transfers/incoming",
+            icon: <Download className=" h-5 w-5" />,
           },
         ],
       },
@@ -105,7 +111,6 @@ export default function DashboardLayout({ children }) {
         href: "/home/logs",
         icon: <Clipboard className="mr-2 h-5 w-5" />,
       },
-      
     ],
     staff: [
       {
@@ -160,81 +165,112 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="flex-none bg-[#fffdfd] shadow-black shadow-2xl text-[#6c6d6d] w-72 h-full py-4">
-        <div className="px-6 h-[80vh]">
-          <h2 className="text-2xl text-[#377DFF] font-bold mb-3">EMS Admin</h2>
+      <div
+        className={`bg-[#fffdfd] shadow-black shadow-2xl text-[#6c6d6d] h-full py-4 transition-all duration-300 ${
+          sidebarOpen ? "w-72 px-6" : "w-16 pl-3 px-2"
+        }`}
+      >
+        <div className="">
+          <div className="flex items-center justify-between">
+            {sidebarOpen && (
+              <img
+                src="/logo.svg"
+                alt="Logo"
+                className="transition-all w-40"
+              />
+            )}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-md hover:bg-gray-200"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
           <hr className="mb-4" />
           <div className="flex flex-col justify-between text-sm h-full">
-          <ul className="space-y-3">
-  {navItems.map((item) =>
-    item.subNav && userRole === "schoolAdmin" ? ( // Only allow subNav for schoolAdmin
-      <li key={item.title}>
-        <button
-          className={`flex items-center w-full justify-between hover:text-white transition py-3 px-2 rounded-md font-medium hover:bg-[#377DFF] ${
-            activeTab === item.title ? "bg-[#377DFF] text-white" : "text-[#6c6d6d]"
-          }`}
-          onClick={() => {
-            setActiveTab(item.title);
-            setTransfersOpen((prev) => !prev);
-          }}
-        >
-          <div className="flex items-center">
-            {item.icon}
-            <span>{item.title}</span>
-          </div>
-          <ChevronRight
-            className={`h-5 w-5 transition-transform duration-300 ${
-              transfersOpen ? "rotate-90" : ""
-            }`}
-          />
-        </button>
-        <div
-          className="overflow-hidden transition-all duration-300"
-          style={{ maxHeight: transfersOpen ? "110px" : "0px" }}
-        >
-          <ul className="pl-8 my-2 gap-y-2 flex flex-col">
-            {item.subNav.map((sub) => (
-              <li key={sub.title}>
-                <Link
-                  href={sub.href}
-                  className={`flex items-center hover:text-white transition py-3 px-2 rounded-md font-medium hover:bg-[#377DFF] ${
-                    activeTab === sub.title ? "bg-[#377DFF] text-white" : "text-[#6c6d6d]"
-                  }`}
-                  onClick={() => handleTabClick(sub.title)}
-                >
-                  <span>{sub.title}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </li>
-    ) : (
-      <li key={item.title}>
-        <Link
-          href={item.href}
-          className={`flex items-center hover:text-white transition py-3 px-2 rounded-md font-medium hover:bg-[#377DFF] ${
-            activeTab === item.title ? "bg-[#377DFF] text-white" : "text-[#6c6d6d]"
-          }`}
-          onClick={() => handleTabClick(item.title)}
-        >
-          {item.icon}
-          <span>{item.title}</span>
-        </Link>
-      </li>
-    )
-  )}
-</ul>
+            <ul className="space-y-3">
+              {navItems.map((item) =>
+                item.subNav && userRole === "schoolAdmin" ? (
+                  <li key={item.title}>
+                    <button
+                      className={`flex items-center w-full justify-between hover:text-white transition py-3 px-3 rounded-md font-medium hover:bg-[#377DFF] ${
+                        activeTab === item.title
+                          ? "bg-[#377DFF] text-white"
+                          : "text-[#6c6d6d]"
+                      }`}
+                      onClick={() => {
+                        setActiveTab(item.title);
+                        setTransfersOpen((prev) => !prev);
+                      }}
+                    >
+                      <div className="flex items-center gap-x-3">
+                        {item.icon}
+                        {sidebarOpen && <span>{item.title}</span>}
+                      </div>
+                      {sidebarOpen && (
+                        <ChevronRight
+                          className={`h-5 w-5 transition-transform duration-300 ${
+                            transfersOpen ? "rotate-90" : ""
+                          }`}
+                        />
+                      )}
+                    </button>
+                    <div
+                      className="overflow-hidden transition-all duration-300"
+                      style={{ maxHeight: transfersOpen ? "110px" : "0px" }}
+                    >
+                      <ul
+                        className={`my-2 gap-y-2 flex flex-col ${
+                          sidebarOpen ? "pl-8" : ""
+                        }`}
+                      >
+                        {item.subNav.map((sub) => (
+                          <li key={sub.title}>
+                            <Link
+                              href={sub.href}
+                              className={`flex items-center gap-x-3 hover:text-white transition py-3 px-3 rounded-md font-medium hover:bg-[#377DFF] ${
+                                activeTab === sub.title
+                                  ? "bg-[#377DFF] text-white"
+                                  : "text-[#6c6d6d]"
+                              }`}
+                              onClick={() => handleTabClick(sub.title)}
+                            >
+                              {sub.icon && sub.icon}
+                              {sidebarOpen && <span>{sub.title}</span>}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                ) : (
+                  <li key={item.title} className={`${sidebarOpen ? "" : "flex"}`}>
+                    <Link
+                      href={item.href}
+                      className={`flex gap-x-3 items-center hover:text-white transition py-3 px-3 rounded-md font-medium hover:bg-[#377DFF] ${
+                        activeTab === item.title
+                          ? "bg-[#377DFF] text-white"
+                          : "text-[#6c6d6d]"
+                      }`}
+                      onClick={() => handleTabClick(item.title)}
+                    >
+                      {item.icon}
+                      {sidebarOpen && <span>{item.title}</span>}
+                    </Link>
+                  </li>
+                )
+              )}
+            </ul>
 
-            <div>
+            <div className="mt-3">
               <button
                 onClick={handleLogout}
-                className={`flex w-full items-center hover:text-white transition py-3 px-2 rounded-md font-medium hover:bg-[#377DFF] ${
+                className={`flex w-full gap-x-3 items-center hover:text-white transition py-3 px-3 rounded-md font-medium hover:bg-[#377DFF] ${
                   activeTab === "logout" ? "bg-[#377DFF] text-white" : "text-[#6c6d6d]"
                 }`}
               >
-                <LogOut className="mr-2 h-5 w-5" />
-                <span>Logout</span>
+                <LogOut className=" h-5 w-5" />
+                {sidebarOpen && <span>Logout</span>}
               </button>
             </div>
           </div>
