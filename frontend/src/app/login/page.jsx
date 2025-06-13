@@ -65,6 +65,7 @@ export default function LoginPage() {
               <li><code>School Admin: User ID: schoolAdmin | Password: school123</code></li>
               <li><code>Staff: User ID: staff | Password: staff123</code></li>
             </ul>
+            <p className="mt-2">You can find the backend sample repo here <a classname="font-semibold underline" href="https://github.com/axnand/employee-mgmt-system">Github Repo</a></p>
 
           </div>
         <p className="absolute bottom-5 font-medium text-gray-700 text-[13px] opacity-75">
